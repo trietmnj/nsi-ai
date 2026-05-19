@@ -1,7 +1,7 @@
 """Smoke tests for FFEPipeline that don't require model weights or a GSV key."""
 
-import os
 import pytest
+import pandas as pd
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -27,7 +27,7 @@ def test_pipeline_discovers_images(image_dir):
     fake_ffh = {"a": 1.5, "b": None, "c": 2.0}
 
     with patch(
-        "nsi_ai.ffe.pipeline.FFHPredictorKlepac"
+        "brails.processors.ffh_predictor_klepac.ffh_predictor_klepac.FFHPredictorKlepac"
     ) as MockFFH:
         mock_instance = MagicMock()
         mock_instance.predict.return_value = fake_ffh
@@ -36,5 +36,5 @@ def test_pipeline_discovers_images(image_dir):
         df = pipeline.run()
 
     assert set(df["id"]) == {"a", "b", "c"}
-    assert df.loc[df["id"] == "b", "ffh_ft"].iloc[0] is None
+    assert pd.isna(df.loc[df["id"] == "b", "ffh_ft"].iloc[0])
     assert df.loc[df["id"] == "a", "ffh_ft"].iloc[0] == pytest.approx(1.5)

@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "nsi-ai"
@@ -14,7 +14,7 @@ dependencies = [
     "pandas>=2.0",
     "shapely>=2.0",
     "tqdm>=4.66",
-    "torch>=2.0",
+    "torch>=2.0,<2.3",
     "torchvision>=0.15",
     "opencv-python>=4.8",
     "detectron2 @ git+https://github.com/facebookresearch/detectron2.git",
@@ -22,6 +22,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.4"]
+
+[tool.uv]
+no-build-isolation-package = ["detectron2"]
 
 [tool.ruff]
 line-length = 100
