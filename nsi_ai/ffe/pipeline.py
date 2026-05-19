@@ -55,7 +55,11 @@ class FFEPipeline:
               id, elevated (0/1/None), elevated_prob, ffh_ft
         """
         if ids is None:
-            ids = [p.stem for p in sorted(self.image_dir.glob("*.jpg"))]
+            ids = [
+                p.stem
+                for p in sorted(self.image_dir.iterdir())
+                if p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+            ]
 
         if not ids:
             raise ValueError(f"No images found in {self.image_dir}")
@@ -86,9 +90,11 @@ class FFEPipeline:
     def _build_image_set(self, ids: list[str]) -> ImageSet:
         images = {}
         for bid in ids:
-            img_path = self.image_dir / f"{bid}.jpg"
-            if img_path.exists():
-                images[bid] = type("_Img", (), {"filename": f"{bid}.jpg"})()
+            for ext in (".jpg", ".jpeg", ".png"):
+                img_path = self.image_dir / f"{bid}{ext}"
+                if img_path.exists():
+                    images[bid] = type("_Img", (), {"filename": f"{bid}{ext}"})()
+                    break
         image_set = ImageSet()
         image_set.dir_path = str(self.image_dir)
         image_set.images = images
@@ -101,16 +107,16 @@ class FFEPipeline:
             FoundationElevationClassifier,
         )
 
-        clf = FoundationElevationClassifier(work_dir=str(self.work_dir))
-        df: pd.DataFrame = clf.predict(image_set)
+        clf = FoundationElevationClassifier(input_data={"workDir": str(self.work_dir)})
+        # returns {key: 'Elevated' | 'Non-elevated'}
+        raw: dict[str, str] = clf.predict(image_set)
 
         elevated: dict[str, Optional[int]] = {}
         prob: dict[str, Optional[float]] = {}
 
-        for _, row in df.iterrows():
-            bid = Path(row["image"]).stem
-            elevated[bid] = int(row["prediction"])
-            prob[bid] = float(row["probability"])
+        for bid, label in raw.items():
+            elevated[bid] = 1 if label == "Elevated" else 0
+            prob[bid] = None  # classifier doesn't expose confidence in its return value
 
         return elevated, prob
 

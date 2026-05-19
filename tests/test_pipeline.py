@@ -10,8 +10,9 @@ from nsi_ai.ffe.pipeline import FFEPipeline
 
 @pytest.fixture
 def image_dir(tmp_path):
-    for bid in ["a", "b", "c"]:
+    for bid in ["a", "b"]:
         (tmp_path / f"{bid}.jpg").write_bytes(b"fake")
+    (tmp_path / "c.png").write_bytes(b"fake")
     return tmp_path
 
 
