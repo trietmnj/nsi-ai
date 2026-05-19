@@ -1,8 +1,25 @@
 """Session-wide patches needed to run on CPU-only machines."""
 
+from pathlib import Path
 import pytest
 import torch
 from detectron2.engine.defaults import DefaultPredictor
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--image-dir",
+        default=None,
+        help="Override the image directory used by integration tests (default: data/gsv/)",
+    )
+
+
+@pytest.fixture(scope="session")
+def image_dir(request):
+    override = request.config.getoption("--image-dir")
+    if override:
+        return Path(override)
+    return Path(__file__).resolve().parents[1] / "data" / "gsv"
 
 _orig_torch_load = torch.load
 _orig_predictor_call = DefaultPredictor.__call__

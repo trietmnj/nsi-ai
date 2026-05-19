@@ -23,10 +23,11 @@ Requires Python ≥ 3.10. A Google Street View Static API key is needed to fetch
 ## Commands
 
 ```bash
-uv run pytest tests/                        # run all tests
-uv run pytest tests/test_integration.py -v -s  # integration test on data/gsv/ samples
-uv run ruff check nsi_ai/                   # lint
-uv run ruff format nsi_ai/                  # format (line length 100)
+uv run pytest tests/                                          # run all tests
+uv run pytest tests/test_integration.py -v -s                 # integration test on data/gsv/
+uv run pytest tests/test_integration.py -v -s --image-dir data/tech-ref/  # use a different folder
+uv run ruff check nsi_ai/                                     # lint
+uv run ruff format nsi_ai/                                    # format (line length 100)
 ```
 
 Run the full pipeline:

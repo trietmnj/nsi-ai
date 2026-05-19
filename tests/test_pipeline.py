@@ -9,7 +9,7 @@ from nsi_ai.ffe.pipeline import FFEPipeline
 
 
 @pytest.fixture
-def image_dir(tmp_path):
+def fake_image_dir(tmp_path):
     for bid in ["a", "b"]:
         (tmp_path / f"{bid}.jpg").write_bytes(b"fake")
     (tmp_path / "c.png").write_bytes(b"fake")
@@ -22,8 +22,8 @@ def test_pipeline_raises_on_empty_dir(tmp_path):
         pipeline.run()
 
 
-def test_pipeline_discovers_images(image_dir):
-    pipeline = FFEPipeline(image_dir=image_dir, work_dir=image_dir, skip_classifier=True)
+def test_pipeline_discovers_images(fake_image_dir):
+    pipeline = FFEPipeline(image_dir=fake_image_dir, work_dir=fake_image_dir, skip_classifier=True)
 
     fake_ffh = {"a": 1.5, "b": None, "c": 2.0}
 
