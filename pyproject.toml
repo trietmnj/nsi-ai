@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "nsi-ai"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "BRAILS>=3.1.0",
+    "requests>=2.31",
+    "Pillow>=10.0",
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "shapely>=2.0",
+    "tqdm>=4.66",
+    "torch>=2.0",
+    "torchvision>=0.15",
+    "opencv-python>=4.8",
+    "detectron2 @ git+https://github.com/facebookresearch/detectron2.git",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.4"]
+
+[tool.ruff]
+line-length = 100
